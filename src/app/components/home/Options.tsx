@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { Button, IconButton } from "@chakra-ui/react";
 import { FiPlus } from "react-icons/fi";
 
 export default function Options() {
@@ -32,9 +32,11 @@ export default function Options() {
       </div>
 
       <div className="ml-auto">
-        <Button className="drop-shadow-lg" size="sm" colorScheme="whiteAlpha">
-          <FiPlus color="#000" size={15} />
-        </Button>
+        <IconButton
+          aria-label="Adicionar Todo"
+          icon={<FiPlus color="#000" size={15} />}
+          colorScheme="whiteAlpha"
+        />
       </div>
     </div>
   );
