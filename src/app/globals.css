@@ -2,9 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-
 body {
-  background: #eee;
+  background-color: #eee !important;
 }
 
 @layer utilities {
