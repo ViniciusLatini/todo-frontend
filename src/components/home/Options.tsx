@@ -4,12 +4,12 @@ import { FiPlus } from "react-icons/fi";
 export default function Options() {
   return (
     <div className="flex w-full border-b border-b-gray-300 px-5 py-2">
-      <div>
+      <div className="flex gap-2">
         <Button
           colorScheme="blackAlpha"
           className="!text-black"
           size="sm"
-          variant="ghost"
+          variant="outline"
         >
           Status
         </Button>
@@ -17,7 +17,7 @@ export default function Options() {
           colorScheme="blackAlpha"
           className="!text-black"
           size="sm"
-          variant="ghost"
+          variant="outline"
         >
           Status
         </Button>
@@ -25,7 +25,7 @@ export default function Options() {
           colorScheme="blackAlpha"
           className="!text-black"
           size="sm"
-          variant="ghost"
+          variant="outline"
         >
           Status
         </Button>

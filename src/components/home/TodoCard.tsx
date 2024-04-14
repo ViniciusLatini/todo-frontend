@@ -9,7 +9,7 @@ import { FiUser, FiCalendar, FiEdit, FiTrash } from "react-icons/fi";
 
 export default function TodoCard() {
   return (
-    <Card className="w-80 h-48">
+    <Card className="w-80 h-48 mx-auto">
       <CardBody
         className="flex items-center justify-between gap-3"
         paddingY={0}
