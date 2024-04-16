@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import NextLink from "next/link";
 import { Link } from "@chakra-ui/react";
 import {
@@ -7,12 +9,48 @@ import {
   Input,
   FormControl,
   FormLabel,
+  FormErrorMessage,
   InputRightElement,
   Button,
   InputGroup,
 } from "@chakra-ui/react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { FormikConfig, useFormik } from "formik";
+import { toFormikValidationSchema } from "zod-formik-adapter";
+import SigninSchema, { SigninSchemaType } from "@/data/schema/SigninSchema";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClick = () => setShowPassword(!showPassword);
+  const router = useRouter();
+
+  const opts: FormikConfig<SigninSchemaType> = {
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: toFormikValidationSchema(SigninSchema),
+    onSubmit: async (values) => {
+      try {
+        const res = await fetch("/api/auth/signin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(values),
+        });
+
+        if (res?.status === 401) {
+          alert("Credenciais inválidas");
+          return;
+        }
+
+        router.push("/");
+      } catch (error) {}
+    },
+  };
+  const { handleSubmit, errors, touched, values, handleChange } =
+    useFormik(opts);
+
   return (
     <main className="flex items-center justify-center h-svh px-2">
       <Card width="500px" className="drop-shadow-xl">
@@ -22,35 +60,54 @@ export default function Login() {
             Insira suas credenciais para acessar sua lista de tarefas!
           </h3>
 
-          <Stack spacing={4} className="mb-3">
-            <FormControl>
-              <FormLabel>Email</FormLabel>
-              <Input placeholder="Digite seu email" type="email" />
-            </FormControl>
-
-            <FormControl>
-              <FormLabel>Senha</FormLabel>
-              <InputGroup>
+          <form onSubmit={handleSubmit}>
+            <Stack spacing={4} className="mb-3">
+              <FormControl isInvalid={!!errors.email && touched.email}>
+                <FormLabel>Email</FormLabel>
                 <Input
-                  pr="4.5rem"
-                  // type={show ? "text" : "password"}
-                  placeholder="Digite sua senha"
+                  name="email"
+                  value={values.email}
+                  onChange={handleChange}
+                  placeholder="Digite seu email"
+                  type="email"
                 />
-                <InputRightElement width="4.5rem">
-                  {/* onClick={handleClick} */}
-                  <Button h="1.75rem" size="sm">
-                    {/* {show ? "Hide" : "Show"} */}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-            </FormControl>
+                <FormErrorMessage>{errors.email}</FormErrorMessage>
+              </FormControl>
 
-            <Button colorScheme="blue">Entrar</Button>
-          </Stack>
+              <FormControl isInvalid={!!errors.password && touched.password}>
+                <FormLabel>Senha</FormLabel>
+                <InputGroup>
+                  <Input
+                    pr="4.5rem"
+                    name="password"
+                    value={values.password}
+                    onChange={handleChange}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Digite sua senha"
+                  />
+                  <InputRightElement width="4.5rem">
+                    <Button
+                      variant="ghost"
+                      h="1.75rem"
+                      size="sm"
+                      onClick={handleClick}
+                    >
+                      {showPassword ? <FiEyeOff /> : <FiEye />}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+                <FormErrorMessage>{errors.password}</FormErrorMessage>
+              </FormControl>
+
+              <Button type="submit" colorScheme="blue">
+                Entrar
+              </Button>
+            </Stack>
+          </form>
 
           <div className="flex justify-center gap-1">
             Não possui uma conta?{" "}
-            <Link as={NextLink} href="/signup">
+            <Link className="font-bold" as={NextLink} href="/signup">
               Cadastre-se
             </Link>
           </div>
