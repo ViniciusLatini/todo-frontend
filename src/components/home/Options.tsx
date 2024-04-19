@@ -1,7 +1,14 @@
+"use client";
 import { Button, IconButton } from "@chakra-ui/react";
 import { FiPlus } from "react-icons/fi";
+import AddTodoModal from "./AddTodoModal";
+import { useState } from "react";
 
 export default function Options() {
+  const [isOpen, setIsOpen] = useState(false);
+  const onClose = () => setIsOpen(false);
+  const onOpen = () => setIsOpen(true);
+
   return (
     <div className="flex w-full border-b border-b-gray-300 px-5 py-2">
       <div className="flex gap-2">
@@ -11,7 +18,7 @@ export default function Options() {
           size="sm"
           variant="outline"
         >
-          Status
+          Data
         </Button>
         <Button
           colorScheme="blackAlpha"
@@ -27,7 +34,7 @@ export default function Options() {
           size="sm"
           variant="outline"
         >
-          Status
+          Pessoa
         </Button>
       </div>
 
@@ -36,8 +43,10 @@ export default function Options() {
           aria-label="Adicionar Todo"
           icon={<FiPlus color="#000" size={15} />}
           colorScheme="whiteAlpha"
+          onClick={onOpen}
         />
       </div>
+      <AddTodoModal isOpen={isOpen} onClose={onClose} />
     </div>
   );
 }
