@@ -12,6 +12,7 @@ interface TodoContextProps {
   getTodos: (arrTodos: Todo[]) => void;
   deleteTodo: (id: string) => void;
   addTodo: (data: { title: string; userId: string }) => void;
+  changeTodoStatus: (todoId: string, completed: boolean) => void;
 }
 
 const TodoContext = createContext({} as TodoContextProps);
@@ -36,13 +37,7 @@ export function TodoProvider({ children }: { children: ReactNode }) {
     });
   }
 
-  async function addTodo({
-    title,
-    userId,
-  }: {
-    title: string;
-    userId: string;
-  }) {
+  async function addTodo({ title, userId }: { title: string; userId: string }) {
     const res = await fetch(`/api/todo/${userId}`, {
       method: "POST",
       body: JSON.stringify({ title }),
@@ -53,8 +48,18 @@ export function TodoProvider({ children }: { children: ReactNode }) {
     setTodos(newTodos);
   }
 
+  async function changeTodoStatus(todoId: string, completed: boolean) {
+    const newTodos = { ...todos };
+    newTodos[todoId].completed = completed;
+    setTodos(newTodos);
+    await fetch(`/api/todo/${todoId}`, {
+      method: "PUT",
+      body: JSON.stringify({ title: newTodos[todoId].title, completed }),
+    });
+  }
+
   return (
-    <TodoContext.Provider value={{ todos, getTodos, deleteTodo, addTodo }}>
+    <TodoContext.Provider value={{ todos, getTodos, deleteTodo, addTodo, changeTodoStatus }}>
       {children}
     </TodoContext.Provider>
   );

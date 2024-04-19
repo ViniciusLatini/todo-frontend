@@ -30,3 +30,15 @@ export async function POST(
     throw error;
   }
 }
+
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params;
+  const { completed, title } = await req.json();
+  await api.put(`/todo/${id}`, {
+    title,
+    completed,
+  });
+}

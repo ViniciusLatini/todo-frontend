@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { FiUser, FiCalendar, FiEdit, FiTrash } from "react-icons/fi";
 import { formatDate } from "@/utils/formatDate";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTodo } from "@/context/todoContext";
 
 export default function TodoCard({
@@ -21,18 +21,25 @@ export default function TodoCard({
   user,
 }: Todo) {
   const [check, setCheck] = useState(completed);
-  const { deleteTodo } = useTodo();
+  const { deleteTodo, changeTodoStatus } = useTodo();
+
+  function handleCheck(e: React.ChangeEvent<HTMLInputElement>) {
+    changeTodoStatus(id, e.target.checked);
+    setCheck(e.target.checked);
+  }
 
   return (
     <Card className="w-80 h-48 mx-auto">
       <CardBody
-        className="flex items-center justify-between gap-3"
+        className={`flex items-center justify-between gap-3 ${
+          check && "text-gray-400 line-through"
+        }`}
         paddingY={0}
       >
         <div className="flex items-start">
           <Checkbox
             isChecked={check}
-            onChange={(e) => setCheck(e.target.checked)}
+            onChange={handleCheck}
             colorScheme="gray"
             className="mt-1 mr-2"
           />
