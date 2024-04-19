@@ -1,4 +1,5 @@
 import { api } from "@/data/axios";
+import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
@@ -8,9 +9,14 @@ export async function POST(req: Request) {
       password,
     });
     if (!data) {
-      return Response.json({ message: "Credenciais inválidas" }, { status: 401 });
+      return Response.json(
+        { message: "Credenciais inválidas" },
+        { status: 401 }
+      );
     }
-    return Response.json(data);
+
+    cookies().set("id", data.id);
+    return Response.json({ ...data });
   } catch (error) {
     console.log(error);
     throw error;

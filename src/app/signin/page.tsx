@@ -19,11 +19,14 @@ import { FormikConfig, useFormik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import SigninSchema, { SigninSchemaType } from "@/data/schema/SigninSchema";
 import { useRouter } from "next/navigation";
+import { User } from "@/data/types/user";
+import { useUser } from "@/context/userContext";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const handleClick = () => setShowPassword(!showPassword);
   const router = useRouter();
+  const { signin } = useUser();
 
   const opts: FormikConfig<SigninSchemaType> = {
     initialValues: {
@@ -43,7 +46,8 @@ export default function Login() {
           alert("Credenciais inválidas");
           return;
         }
-
+        const data: User = await res.json();
+        signin(data);
         router.push("/");
       } catch (error) {}
     },
