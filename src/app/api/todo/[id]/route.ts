@@ -13,3 +13,20 @@ export async function DELETE(
     throw error;
   }
 }
+
+export async function POST(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params;
+    const { title } = await req.json();
+    const { data } = await api.post(`/todo/${id}`, {
+      title,
+    });
+    return Response.json(data);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

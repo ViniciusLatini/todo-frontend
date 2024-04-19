@@ -11,6 +11,7 @@ interface TodoContextProps {
   todos: TodoObj | undefined;
   getTodos: (arrTodos: Todo[]) => void;
   deleteTodo: (id: string) => void;
+  addTodo: (data: { title: string; userId: string }) => void;
 }
 
 const TodoContext = createContext({} as TodoContextProps);
@@ -35,8 +36,25 @@ export function TodoProvider({ children }: { children: ReactNode }) {
     });
   }
 
+  async function addTodo({
+    title,
+    userId,
+  }: {
+    title: string;
+    userId: string;
+  }) {
+    const res = await fetch(`/api/todo/${userId}`, {
+      method: "POST",
+      body: JSON.stringify({ title }),
+    });
+    const data = await res.json();
+    const newTodos = { ...todos };
+    newTodos[data.id] = data;
+    setTodos(newTodos);
+  }
+
   return (
-    <TodoContext.Provider value={{ todos, getTodos, deleteTodo }}>
+    <TodoContext.Provider value={{ todos, getTodos, deleteTodo, addTodo }}>
       {children}
     </TodoContext.Provider>
   );
