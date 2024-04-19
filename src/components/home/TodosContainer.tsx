@@ -17,10 +17,6 @@ export default function TodosContainer({ todosArr }: TodosContainerProps) {
     if (todosArr) getTodos(todosArr);
   }, [todosArr]);
 
-  useEffect(() => {
-    todos && console.log(Object.values(todos));
-  }, [todos]);
-
   return (
     <Wrap marginTop="20px" spacing="20px">
       <Suspense fallback={<h1>loading</h1>}>
