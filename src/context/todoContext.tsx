@@ -10,6 +10,7 @@ interface TodoObj {
 interface TodoContextProps {
   todos: TodoObj | undefined;
   getTodos: (arrTodos: Todo[]) => void;
+  deleteTodo: (id: string) => void;
 }
 
 const TodoContext = createContext({} as TodoContextProps);
@@ -25,8 +26,17 @@ export function TodoProvider({ children }: { children: ReactNode }) {
     setTodos(todoObj);
   }
 
+  async function deleteTodo(id: string) {
+    const newTodos = { ...todos };
+    delete newTodos[id];
+    setTodos(newTodos);
+    await fetch(`/api/todo/${id}`, {
+      method: "DELETE",
+    });
+  }
+
   return (
-    <TodoContext.Provider value={{ todos, getTodos }}>
+    <TodoContext.Provider value={{ todos, getTodos, deleteTodo }}>
       {children}
     </TodoContext.Provider>
   );

@@ -1,3 +1,4 @@
+"use client";
 import { Todo } from "@/data/types/todo";
 import {
   Card,
@@ -8,6 +9,8 @@ import {
 } from "@chakra-ui/react";
 import { FiUser, FiCalendar, FiEdit, FiTrash } from "react-icons/fi";
 import { formatDate } from "@/utils/formatDate";
+import { useState } from "react";
+import { useTodo } from "@/context/todoContext";
 
 export default function TodoCard({
   id,
@@ -17,6 +20,9 @@ export default function TodoCard({
   completed,
   user,
 }: Todo) {
+  const [check, setCheck] = useState(completed);
+  const { deleteTodo } = useTodo();
+
   return (
     <Card className="w-80 h-48 mx-auto">
       <CardBody
@@ -24,7 +30,12 @@ export default function TodoCard({
         paddingY={0}
       >
         <div className="flex items-start">
-          <Checkbox colorScheme="gray" className="mt-1 mr-2" />
+          <Checkbox
+            isChecked={check}
+            onChange={(e) => setCheck(e.target.checked)}
+            colorScheme="gray"
+            className="mt-1 mr-2"
+          />
           <span className="text-ellipsis text-justify line-clamp-3">
             {title}
           </span>
@@ -44,10 +55,11 @@ export default function TodoCard({
         <div className="flex items-end h-full gap-1">
           <IconButton
             variant="ghost"
-            aria-label="Editar"
+            aria-label="Excluir"
             colorScheme="red"
             icon={<FiTrash fontSize={17} />}
             size="sm"
+            onClick={() => deleteTodo(id)}
           />
         </div>
       </CardFooter>
