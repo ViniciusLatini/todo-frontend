@@ -7,25 +7,31 @@ import { Todo } from "@/data/types/todo";
 import { useTodo } from "@/context/todoContext";
 
 interface TodosContainerProps {
-  todos: Todo[];
+  todosArr: Todo[];
 }
 
-export default function TodosContainer({ todos }: TodosContainerProps) {
-  const { getTodos } = useTodo();
+export default function TodosContainer({ todosArr }: TodosContainerProps) {
+  const { getTodos, todos } = useTodo();
 
   useEffect(() => {
-    if(todos)
-      getTodos(todos);
-  },[todos])
+    if (todosArr) getTodos(todosArr);
+  }, [todosArr]);
+
+  useEffect(() => {
+    todos && console.log(Object.values(todos));
+  }, [todos]);
 
   return (
     <Wrap marginTop="20px" spacing="20px">
       <Suspense fallback={<h1>loading</h1>}>
-        {todos?.map((todo) => (
-          <WrapItem key={todo.id}>
-            <TodoCard />
-          </WrapItem>
-        ))}
+        {todos &&
+          Object.values(todos)?.map((todo) => (
+            <WrapItem key={todo.id}>
+              <TodoCard
+                {...todo}
+              />
+            </WrapItem>
+          ))}
       </Suspense>
     </Wrap>
   );

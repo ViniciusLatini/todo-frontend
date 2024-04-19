@@ -1,3 +1,4 @@
+import { Todo } from "@/data/types/todo";
 import {
   Card,
   CardBody,
@@ -6,8 +7,16 @@ import {
   CardFooter,
 } from "@chakra-ui/react";
 import { FiUser, FiCalendar, FiEdit, FiTrash } from "react-icons/fi";
+import { formatDate } from "@/utils/formatDate";
 
-export default function TodoCard() {
+export default function TodoCard({
+  id,
+  title,
+  created_at,
+  updated_at,
+  completed,
+  user,
+}: Todo) {
   return (
     <Card className="w-80 h-48 mx-auto">
       <CardBody
@@ -17,9 +26,7 @@ export default function TodoCard() {
         <div className="flex items-start">
           <Checkbox colorScheme="gray" className="mt-1 mr-2" />
           <span className="text-ellipsis text-justify line-clamp-3">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex,
-            corrupti. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Eaque,
+            {title}
           </span>
         </div>
       </CardBody>
@@ -27,20 +34,14 @@ export default function TodoCard() {
       <CardFooter className="flex justify-between" paddingTop={0}>
         <div className="flex flex-col gap-1">
           <span className="flex gap-2 items-center">
-            <FiUser fontSize={17} /> Rogerin
+            <FiUser fontSize={17} /> {user.name}
           </span>
           <span className="flex gap-2 items-center">
-            <FiCalendar fontSize={17} /> 10/10/2001
+            <FiCalendar fontSize={17} /> {formatDate(created_at)}
           </span>
         </div>
 
         <div className="flex items-end h-full gap-1">
-          <IconButton
-            variant="ghost"
-            aria-label="Editar"
-            icon={<FiEdit fontSize={17} />}
-            size="sm"
-          />
           <IconButton
             variant="ghost"
             aria-label="Editar"

@@ -4,13 +4,8 @@ import { Todo } from "@/data/types/todo";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 interface TodoObj {
-  id: string;
-  title: string;
-  completed: boolean;
-  created_at: string;
-  updated_at: string;
+  [key: string]: Todo;
 }
-[];
 
 interface TodoContextProps {
   todos: TodoObj | undefined;
@@ -23,12 +18,11 @@ export function TodoProvider({ children }: { children: ReactNode }) {
   const [todos, setTodos] = useState<TodoObj | undefined>();
 
   function getTodos(arrTodos: Todo[]) {
-    setTodos(
-      arrTodos.reduce((acc: any, todo: Todo) => {
-        acc[todo.id] = todo;
-        return acc;
-      })
-    );
+    const todoObj: TodoObj = {};
+    arrTodos.forEach((todo) => {
+      todoObj[todo.id] = todo;
+    });
+    setTodos(todoObj);
   }
 
   return (

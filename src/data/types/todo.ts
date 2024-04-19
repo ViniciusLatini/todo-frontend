@@ -4,4 +4,8 @@ export interface Todo {
   completed: boolean;
   created_at: string;
   updated_at: string;
+  user: {
+    id: string;
+    name: string;
+  };
 }
