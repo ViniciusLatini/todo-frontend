@@ -13,12 +13,24 @@ interface TodoContextProps {
   deleteTodo: (id: string) => void;
   addTodo: (data: { title: string; userId: string }) => void;
   changeTodoStatus: (todoId: string, completed: boolean) => void;
+  filterTodos: (data: { filterId: number; value: string }) => void;
+}
+
+interface Filters {
+  user: string;
+  completed: string;
+  date: string;
 }
 
 const TodoContext = createContext({} as TodoContextProps);
 
 export function TodoProvider({ children }: { children: ReactNode }) {
   const [todos, setTodos] = useState<TodoObj | undefined>();
+  const [filters, setFilters] = useState<Filters>({
+    user: "",
+    completed: "",
+    date: "asc",
+  });
 
   function getTodos(arrTodos: Todo[]) {
     const todoObj: TodoObj = {};
@@ -58,8 +70,47 @@ export function TodoProvider({ children }: { children: ReactNode }) {
     });
   }
 
+  async function filterTodos({
+    filterId,
+    value,
+  }: {
+    filterId: number;
+    value: string;
+  }) {
+    const newFilters = { ...filters };
+    switch (filterId) {
+      case 1:
+        newFilters.date = value;
+        break;
+      case 2:
+        newFilters.completed = value;
+        break;
+      case 3:
+        newFilters.user = value;
+        break;
+    }
+    setFilters(newFilters);
+
+    const res = await fetch("/api/todo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(filters),
+    });
+    const data = await res.json();
+    getTodos(data);
+  }
+
   return (
-    <TodoContext.Provider value={{ todos, getTodos, deleteTodo, addTodo, changeTodoStatus }}>
+    <TodoContext.Provider
+      value={{
+        todos,
+        getTodos,
+        deleteTodo,
+        addTodo,
+        changeTodoStatus,
+        filterTodos,
+      }}
+    >
       {children}
     </TodoContext.Provider>
   );
