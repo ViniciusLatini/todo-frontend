@@ -18,10 +18,7 @@ export default function TodosContainer({ todosArr }: TodosContainerProps) {
   }, [todosArr]);
 
   return (
-    <Wrap
-      marginTop="20px"
-      spacing="20px"
-    >
+    <Wrap marginTop="20px" spacing="20px" justify={"center"}>
       <Suspense fallback={<h1>loading</h1>}>
         {todos &&
           Object.values(todos)?.map((todo) => (
