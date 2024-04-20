@@ -2,10 +2,9 @@
 import { useTodo } from "@/context/todoContext";
 import { TodosStats } from "@/data/types/todo";
 import { ResponsivePie } from "@nivo/pie";
-import { useEffect } from "react";
 
 export default function Chart({ data }: { data: TodosStats[] }) {
-  const { stats, initStats } = useTodo();
+  const { stats } = useTodo();
   const dataArr = data.map((item: TodosStats) => {
     return {
       id: item.id,
