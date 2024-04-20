@@ -5,6 +5,8 @@ import { api } from "@/data/axios";
 import { TodosStats } from "@/data/types/todo";
 import { User } from "@/data/types/user";
 import { Card } from "@chakra-ui/react";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 async function getTodosStats() {
   const { data } = await api.get("/todo/stats");
@@ -19,6 +21,10 @@ async function getAllUsers() {
 export default async function Dashboard() {
   const todosStats = await getTodosStats();
   const users = await getAllUsers();
+  const user = cookies().get("id");
+  if (!user) {
+    redirect("/signin");
+  }
 
   return (
     <>

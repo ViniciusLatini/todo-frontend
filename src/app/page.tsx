@@ -4,6 +4,8 @@ import { api } from "@/data/axios";
 import { Todo } from "@/data/types/todo";
 import TodosContainer from "@/components/home/TodosContainer";
 import { User } from "@/data/types/user";
+import { cookies } from "next/headers";
+import { redirect } from 'next/navigation'
 
 async function getUserTodos() {
   try {
@@ -22,6 +24,11 @@ async function getAllUsers() {
 export default async function Home() {
   const todos = await getUserTodos();
   const users = await getAllUsers();
+  const user = cookies().get("id");
+  if (!user) {
+    redirect("/signin");
+  }
+
   return (
     <>
       <Header />
