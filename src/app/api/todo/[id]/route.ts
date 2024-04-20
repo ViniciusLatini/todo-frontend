@@ -41,4 +41,5 @@ export async function PUT(
     title,
     completed,
   });
+  return Response.json({ message: "ok" });
 }

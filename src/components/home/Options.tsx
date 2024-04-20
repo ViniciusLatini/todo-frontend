@@ -1,31 +1,59 @@
 "use client";
-import { Button, IconButton } from "@chakra-ui/react";
+import { Button, IconButton, Select } from "@chakra-ui/react";
 import { FiPlus, FiChevronUp, FiChevronDown } from "react-icons/fi";
 import AddTodoModal from "./AddTodoModal";
 import { useState } from "react";
 import { useTodo } from "@/context/todoContext";
+import { User } from "../../data/types/user";
 
-export default function Options() {
+export default function Options({ users }: { users: User[] | undefined }) {
   const [isOpen, setIsOpen] = useState(false);
   const [sortDate, setSortDate] = useState("asc");
-  const [filterStatus, setFilterStatus] = useState("");
+  const [filterStatus, setFilterStatus] = useState({
+    label: "Todos",
+    value: "",
+  });
   const [filterUser, setFilterUser] = useState("");
   const onClose = () => setIsOpen(false);
   const onOpen = () => setIsOpen(true);
-  const { filterTodos } = useTodo();
+  const { filterTodos, filters } = useTodo();
 
   function handleSortDate() {
-    if (sortDate === "asc") {
-      setSortDate("desc");
-    } else {
-      setSortDate("asc");
+    const sort = sortDate === "asc" ? "desc" : "asc";
+    setSortDate(sort);
+    const newFilters = { ...filters, date: sort };
+    filterTodos(newFilters);
+  }
+
+  function handleFilterStatus() {
+    let status = "";
+    switch (filterStatus.value) {
+      case "true":
+        setFilterStatus({ label: "Pendentes", value: "false" });
+        status = "false";
+        break;
+      case "false":
+        setFilterStatus({ label: "Todos", value: "" });
+        status = "";
+        break;
+      default:
+        setFilterStatus({ label: "Finalizados", value: "true" });
+        status = "true";
+        break;
     }
-    filterTodos({filterId: 1, value: sortDate});
+
+    filterTodos({ ...filters, completed: status });
+  }
+
+  function handleFilterUser(e: React.ChangeEvent<HTMLSelectElement>) {
+    const newFilters = { ...filters, user: e.target.value };
+    filterTodos(newFilters);
+    setFilterUser(e.target.value);
   }
 
   return (
     <div className="flex w-full border-b border-b-gray-300 px-5 py-2">
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
         <Button
           colorScheme="blackAlpha"
           className="!text-black flex items-center gap-1"
@@ -33,24 +61,38 @@ export default function Options() {
           variant="outline"
           onClick={handleSortDate}
         >
-          Data {sortDate === "asc" ? <FiChevronUp /> : <FiChevronDown />}
+          Data{" "}
+          {sortDate === "asc" ? (
+            <FiChevronUp color="#000" size={50} />
+          ) : (
+            <FiChevronDown color="#000" size={50} />
+          )}
         </Button>
         <Button
           colorScheme="blackAlpha"
           className="!text-black"
+          width={150}
           size="sm"
           variant="outline"
+          onClick={handleFilterStatus}
         >
-          Status
+          {filterStatus.label}
         </Button>
-        <Button
+        <Select
+          variant="outline"
+          placeholder="Filtre por usuário"
+          name="userId"
+          size="sm"
           colorScheme="blackAlpha"
-          className="!text-black"
-          size="sm"
-          variant="outline"
+          value={filterUser}
+          onChange={handleFilterUser}
         >
-          Pessoa
-        </Button>
+          {users?.map((user: User) => (
+            <option key={user.id} value={user.id}>
+              {user.name}
+            </option>
+          ))}
+        </Select>
       </div>
 
       <div className="ml-auto">
