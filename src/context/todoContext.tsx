@@ -23,7 +23,6 @@ interface TodoContextProps {
   filterTodos: (data: Filters) => void;
   getTodosStats: (userId: string) => void;
   stats: GraphData[] | [];
-  initStats: (data: TodosStats[]) => void;
 }
 
 interface Filters {
@@ -97,17 +96,6 @@ export function TodoProvider({ children }: { children: ReactNode }) {
     setStats(dataArr);
   }
 
-  function initStats(data: TodosStats[]) {
-    const dataArr: GraphData[] = data.map((item: TodosStats) => {
-      return {
-        id: item.id,
-        label: item.id,
-        value: item.count,
-      };
-    });
-    setStats(dataArr);
-  }
-
   async function filterTodos(newFilters: Filters) {
     const res = await fetch("/api/todo", {
       method: "POST",
@@ -131,7 +119,6 @@ export function TodoProvider({ children }: { children: ReactNode }) {
         changeTodoStatus,
         filterTodos,
         getTodosStats,
-        initStats,
       }}
     >
       {children}
