@@ -14,7 +14,7 @@ export default function TodosContainer({ todosArr }: TodosContainerProps) {
   const { getTodos, todos } = useTodo();
 
   useEffect(() => {
-    if (todosArr) getTodos(todosArr);
+    todosArr && getTodos(todosArr);
   }, [todosArr]);
 
   return (

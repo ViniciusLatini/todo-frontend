@@ -1,10 +1,16 @@
 "use client";
 
-import { Todo } from "@/data/types/todo";
+import { Todo, TodosStats } from "@/data/types/todo";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 interface TodoObj {
   [key: string]: Todo;
+}
+
+interface GraphData {
+  id: string;
+  label: string;
+  value: number;
 }
 
 interface TodoContextProps {
@@ -15,6 +21,9 @@ interface TodoContextProps {
   addTodo: (data: { title: string; userId: string }) => void;
   changeTodoStatus: (todoId: string, completed: boolean) => void;
   filterTodos: (data: Filters) => void;
+  getTodosStats: (userId: string) => void;
+  stats: GraphData[] | [];
+  initStats: (data: TodosStats[]) => void;
 }
 
 interface Filters {
@@ -32,6 +41,7 @@ export function TodoProvider({ children }: { children: ReactNode }) {
     completed: "",
     date: "asc",
   });
+  const [stats, setStats] = useState<GraphData[] | []>([]);
 
   function getTodos(arrTodos: Todo[]) {
     const todoObj: TodoObj = {};
@@ -71,6 +81,33 @@ export function TodoProvider({ children }: { children: ReactNode }) {
     });
   }
 
+  async function getTodosStats(userId: string) {
+    
+    const res = await fetch(`/api/todo/stats/${userId}`, {
+      method: "GET",
+    });
+    const data = await res.json();
+    const dataArr: GraphData[] = data.map((item: TodosStats) => {
+      return {
+        id: item.id,
+        label: item.id,
+        value: item.count,
+      };
+    });
+    setStats(dataArr);
+  }
+
+  function initStats(data: TodosStats[]) {
+    const dataArr: GraphData[] = data.map((item: TodosStats) => {
+      return {
+        id: item.id,
+        label: item.id,
+        value: item.count,
+      };
+    });
+    setStats(dataArr);
+  }
+
   async function filterTodos(newFilters: Filters) {
     const res = await fetch("/api/todo", {
       method: "POST",
@@ -87,11 +124,14 @@ export function TodoProvider({ children }: { children: ReactNode }) {
       value={{
         todos,
         filters,
+        stats,
         getTodos,
         deleteTodo,
         addTodo,
         changeTodoStatus,
         filterTodos,
+        getTodosStats,
+        initStats,
       }}
     >
       {children}

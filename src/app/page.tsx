@@ -15,8 +15,8 @@ async function getUserTodos() {
 }
 
 async function getAllUsers() {
-  const { data } = await api.get('/users');
-  return data as User[]
+  const { data } = await api.get("/users");
+  return data as User[];
 }
 
 export default async function Home() {

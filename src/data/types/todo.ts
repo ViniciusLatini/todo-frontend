@@ -9,3 +9,9 @@ export interface Todo {
     name: string;
   };
 }
+
+export interface TodosStats {
+  id: string;
+  completed: boolean;
+  count: number;
+}
