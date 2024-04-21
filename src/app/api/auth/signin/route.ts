@@ -17,8 +17,13 @@ export async function POST(req: Request) {
 
     cookies().set("id", data.id);
     return Response.json({ ...data });
-  } catch (error) {
-    console.log(error);
-    throw error;
+  } catch (error: any) {
+    if (error.response?.status === 404) {
+      return Response.json(
+        { message: "Credenciais inválidas" },
+        { status: 401 }
+      );
+    } else
+    throw new Error("Erro ao fazer login");
   }
 }

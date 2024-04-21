@@ -46,13 +46,17 @@ export default function Login() {
 
         if (res?.status === 401) {
           alert("Credenciais inválidas");
+          setIsLoading(false);
           return;
         }
         const data: User = await res.json();
         signin(data);
         setIsLoading(false);
         router.push("/");
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+        setIsLoading(false);
+      }
     },
   };
   const { handleSubmit, errors, touched, values, handleChange } =

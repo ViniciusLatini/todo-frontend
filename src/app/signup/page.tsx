@@ -42,6 +42,7 @@ export default function SignUp() {
         setIsLoading(false);
         router.push("/");
       } catch (error) {
+        setIsLoading(false);
         console.log(error);
       }
     },
