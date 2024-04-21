@@ -103,7 +103,7 @@ export default function Options({ users }: { users: User[] | undefined }) {
           onClick={onOpen}
         />
       </div>
-      <AddTodoModal isOpen={isOpen} onClose={onClose} />
+      <AddTodoModal isOpen={isOpen} onClose={onClose} usersArr={users} />
     </div>
   );
 }

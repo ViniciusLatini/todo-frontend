@@ -2,6 +2,7 @@
 
 import { useTodo } from "@/context/todoContext";
 import AddTodoSchema, { AddTodoSchemaType } from "@/data/schema/AddTodoSchema";
+import { User } from "@/data/types/user";
 import {
   Button,
   FormControl,
@@ -25,6 +26,7 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 interface AddTodoModalProps {
   isOpen: boolean;
   onClose: () => void;
+  usersArr: User[] | undefined
 }
 
 interface UsersInfo {
@@ -32,7 +34,7 @@ interface UsersInfo {
   name: string;
 }
 
-export default function AddTodoModal({ isOpen, onClose }: AddTodoModalProps) {
+export default function AddTodoModal({ isOpen, onClose, usersArr }: AddTodoModalProps) {
   const [users, setUsers] = useState<UsersInfo[]>([]);
   const { addTodo } = useTodo();
 
@@ -85,7 +87,7 @@ export default function AddTodoModal({ isOpen, onClose }: AddTodoModalProps) {
                   name="title"
                   value={values.title}
                   onChange={handleChange}
-                  placeholder="Digite seu title"
+                  placeholder="Digite o título"
                   type="title"
                 />
                 <FormErrorMessage>{errors.title}</FormErrorMessage>
@@ -98,7 +100,7 @@ export default function AddTodoModal({ isOpen, onClose }: AddTodoModalProps) {
                 value={values.userId}
                 onChange={handleChange}
               >
-                {users.map((user) => (
+                {usersArr?.map((user) => (
                   <option key={user.id} value={user.id}>
                     {user.name}
                   </option>
