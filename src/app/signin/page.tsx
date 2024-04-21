@@ -25,6 +25,7 @@ import { useUser } from "@/context/userContext";
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const handleClick = () => setShowPassword(!showPassword);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { signin } = useUser();
 
@@ -36,6 +37,7 @@ export default function Login() {
     validationSchema: toFormikValidationSchema(SigninSchema),
     onSubmit: async (values) => {
       try {
+        setIsLoading(true);
         const res = await fetch("/api/auth/signin", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -48,6 +50,7 @@ export default function Login() {
         }
         const data: User = await res.json();
         signin(data);
+        setIsLoading(false);
         router.push("/");
       } catch (error) {}
     },
@@ -103,7 +106,7 @@ export default function Login() {
                 <FormErrorMessage>{errors.password}</FormErrorMessage>
               </FormControl>
 
-              <Button type="submit" colorScheme="blue">
+              <Button isLoading={isLoading} type="submit" colorScheme="blue">
                 Entrar
               </Button>
             </Stack>

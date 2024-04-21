@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const handleClick = () => setShowPassword(!showPassword);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const opts: FormikConfig<SignupSchemaType> = {
     initialValues: {
@@ -32,11 +33,13 @@ export default function SignUp() {
     validationSchema: toFormikValidationSchema(SignupSchema),
     onSubmit: async (values) => {
       try {
+        setIsLoading(true);
         const res = await fetch("/api/auth/signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(values),
         });
+        setIsLoading(false);
         router.push("/");
       } catch (error) {
         console.log(error);
@@ -106,7 +109,7 @@ export default function SignUp() {
                 <FormErrorMessage>{errors.password}</FormErrorMessage>
               </FormControl>
 
-              <Button type="submit" colorScheme="blue">
+              <Button isLoading={isLoading} type="submit" colorScheme="blue">
                 Cadastre-se
               </Button>
             </Stack>
